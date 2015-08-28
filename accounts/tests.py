@@ -3,8 +3,6 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from accounts import backends
 
-
-
 class TestAuthentication(TestCase):
     def setUp(self):
         self.username = "test_user"
@@ -25,6 +23,10 @@ class TestBackend(TestAuthentication):
         result_user = self.dummy_backend._lookup_user(self.username)
         self.assertEqual(result_user.id, self.user.id)
 
+    def test_fail_lookup_by_username(self):
+        result_user = self.dummy_backend._lookup_user("")
+        self.assertEqual(result_user, None)
+
     def test_lookup_by_email(self):
         result_user = self.dummy_backend._lookup_user(self.email)
         self.assertEqual(result_user.id, self.user.id)
@@ -40,4 +42,4 @@ class TestBackend(TestAuthentication):
     def test_get_user(self):
         result_user = self.dummy_backend.get_user(self.user.id)
         self.assertEqual(result_user.id, self.user.id)
-        
+
