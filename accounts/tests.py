@@ -24,7 +24,6 @@ class TestBackend(TestAuthentication):
     def test_lookup_by_username(self):
         result_user = self.dummy_backend._lookup_user(self.username)
         self.assertEqual(result_user.id, self.user.id)
-        print(result_user.password)
 
     def test_lookup_by_email(self):
         result_user = self.dummy_backend._lookup_user(self.email)
@@ -38,4 +37,7 @@ class TestBackend(TestAuthentication):
         result_user = self.dummy_backend.authenticate(self.email, self.password)
         self.assertEqual(result_user.id, self.user.id)
 
-
+    def test_get_user(self):
+        result_user = self.dummy_backend.get_user(self.user.id)
+        self.assertEqual(result_user.id, self.user.id)
+        
