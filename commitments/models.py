@@ -25,6 +25,9 @@ class CommitmentProfile(models.Model):
     def get_active_commitments(self):
         return self.commitment_set.all()
 
+    def __str__(self):
+        return self.__unicode__()
+
     def __unicode__(self):
         return "Commitment Profile for {0}".format(user.username)
 
@@ -44,9 +47,11 @@ class Commitment(models.Model):
     description = models.CharField(max_length=200)
     due_time = models.TimeField(default=DEFAULT_DUE_TIME)
     
-    def __unicode__(self):
-        return self.name
+    def __str__(self):
+        return self.__unicode__()
 
+    def __unicode__(self):
+        return "{0}: due {1} at {2}".format(self.name, "daily", self.due_time)
 
 class CommitmentDailySnapshot(models.Model):
     """A representation of one day's worth of commitments and how each has done""" 
