@@ -48,13 +48,21 @@ BUILT_IN_APPS = [
 ]
 
 CUSTOM_APPS = [
-    'commitments'
+    'commitments',
+    'accounts',
 ]
 
 INSTALLED_APPS = BUILT_IN_APPS + CUSTOM_APPS
 
+
 for app in config('EXTRA_APPS', default='', cast=Csv()):
     INSTALLED_APPS.append(app)
+
+
+# Auth Stuff
+
+AUTH_USER_MODEL = 'accounts.User'
+AUTHENTICATION_BACKENDS = ['accounts.backends.EmailOrUsernameAuthBackend', ]
 
 
 MIDDLEWARE_CLASSES = (
