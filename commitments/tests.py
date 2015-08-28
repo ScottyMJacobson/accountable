@@ -30,3 +30,25 @@ class CommitmentProfileTestCase(DummyUserTestCase):
         all_commitments = my_commitment_profile.get_active_commitments()
         self.assertEqual(all_commitments[0].name, dummy_commitment_name)
         self.assertEqual(all_commitments[0].description, dummy_commitment_description)
+
+
+class CommitmentSnapshotTestCase(DummyUserTestCase):
+    def setUp(self):
+        super(CommitmentSnapshotTestCase, self).setUp()
+        dummy_commitment_name = 'wash face'
+        dummy_commitment_description = 'wash your face every night'
+        my_commitment_profile = self.user.commitmentprofile
+        my_commitment_profile.register_commitment(dummy_commitment_name, 
+            dummy_commitment_description)
+
+    def test_create_daily_snapshot(self):
+        all_commitments = self.user.commitmentprofile.get_active_commitments()
+        snapshot = self.user.commitmentprofile.get_snapshot()
+        assert snapshot
+        duplicate_snapshot = self.user.commitmentprofile.get_snapshot()
+        # make sure it doesn't create duplicates
+        self.assertEqual(snapshot, duplicate_snapshot)
+        
+
+
+

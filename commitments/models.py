@@ -25,9 +25,28 @@ class CommitmentProfile(models.Model):
     def get_active_commitments(self):
         return self.commitment_set.all()
 
+    def get_snapshot(self, date=datetime.date.today()):
+        """Get the commitment snapshot for the given date;
+        If it doesn't exist yet, create it. 
+        Defaults to today"""
+        # make sure the snapshot hasn't been made yet
+        snapshots_existing = self.commitmentdailysnapshot_set.filter(date=date)
+        assert snapshots_existing.count() <= 1
+        if snapshots_existing.count() == 0:
+            # it doesn't exist - make it!
+            new_snapshot = CommitmentDailySnapshot.objects.create(owner=self,
+                                                                    date=date)
+            for commitment in self.get_active_commitments():
+                CommitmentStatus.objects.create(parent_snapshot=new_snapshot, 
+                                        commitment=commitment)
+            return new_snapshot
+        else:
+            return snapshots_existing[0]
+
+
+
     def __str__(self):
         return self.__unicode__()
-
     def __unicode__(self):
         return "Commitment Profile for {0}".format(user.username)
 
