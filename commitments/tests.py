@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from commitments.models import *
 
 
-class DummyUserTestCase(TestCase):
+class CommitmentProfileTestCase(TestCase):
     def setUp(self):
         self.username = "test_user"
         self.email = "test@email.com"
@@ -12,9 +12,8 @@ class DummyUserTestCase(TestCase):
                 username = self.username,
                 email = self.email,
                 password = self.password,
-            )
+            )    
 
-class CommitmentProfileTestCase(DummyUserTestCase):
     def test_user_with_profile(self):
         """make sure that the commitmentprofile gets automatically generated"""
         my_commitment_profile = self.user.commitmentprofile
@@ -32,14 +31,21 @@ class CommitmentProfileTestCase(DummyUserTestCase):
         self.assertEqual(all_commitments[0].description, dummy_commitment_description)
 
 
-class CommitmentSnapshotTestCase(DummyUserTestCase):
+class CommitmentSnapshotTestCase(TestCase):
     def setUp(self):
-        super(CommitmentSnapshotTestCase, self).setUp()
-        dummy_commitment_name = 'wash face'
-        dummy_commitment_description = 'wash your face every night'
+        self.username = "test_user"
+        self.email = "test@email.com"
+        self.password = "test_password"
+        self.user =  get_user_model().objects.create_user(
+                username = self.username,
+                email = self.email,
+                password = self.password,
+            )
+        self.dummy_commitment_name = 'wash face'
+        self.dummy_commitment_description = 'wash your face every night'
         my_commitment_profile = self.user.commitmentprofile
-        my_commitment_profile.register_commitment(dummy_commitment_name, 
-            dummy_commitment_description)
+        my_commitment_profile.register_commitment(self.dummy_commitment_name, 
+            self.dummy_commitment_description)
 
     def test_create_daily_snapshot(self):
         all_commitments = self.user.commitmentprofile.get_active_commitments()
@@ -48,7 +54,8 @@ class CommitmentSnapshotTestCase(DummyUserTestCase):
         duplicate_snapshot = self.user.commitmentprofile.get_snapshot()
         # make sure it doesn't create duplicates
         self.assertEqual(snapshot, duplicate_snapshot)
-        
-
+        commitment_statuses = snapshot.commitmentstatus_set.all()
+        self.assertEqual(commitment_statuses[0].commitment.name,
+                        self.dummy_commitment_name)
 
 
