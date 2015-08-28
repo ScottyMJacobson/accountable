@@ -31,7 +31,7 @@ ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
 
 # Application definition
 
-INSTALLED_APPS = [
+BUILT_IN_APPS = [
     # Project specific apps
     'accountable.base',
 
@@ -46,6 +46,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 ]
+
+CUSTOM_APPS = [
+    'commitments'
+]
+
+INSTALLED_APPS = BUILT_IN_APPS + CUSTOM_APPS
 
 for app in config('EXTRA_APPS', default='', cast=Csv()):
     INSTALLED_APPS.append(app)
