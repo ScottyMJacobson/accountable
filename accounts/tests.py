@@ -30,5 +30,12 @@ class TestBackend(TestAuthentication):
         result_user = self.dummy_backend._lookup_user(self.email)
         self.assertEqual(result_user.id, self.user.id)
         
+    def test_authenticate_by_username(self):
+        result_user = self.dummy_backend.authenticate(self.username, self.password)
+        self.assertEqual(result_user.id, self.user.id)
 
-# Create your tests here.
+    def test_authenticate_by_email(self):
+        result_user = self.dummy_backend.authenticate(self.email, self.password)
+        self.assertEqual(result_user.id, self.user.id)
+
+
