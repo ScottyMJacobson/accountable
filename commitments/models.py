@@ -53,9 +53,10 @@ class Commitment(models.Model):
     def __unicode__(self):
         return "{0}: due {1} at {2}".format(self.name, "daily", self.due_time)
 
+
 class CommitmentDailySnapshot(models.Model):
     """A representation of one day's worth of commitments and how each has done""" 
-    date = models.DateField()
+    date = models.DateField(default = datetime.date.today)
     owner = models.ForeignKey(CommitmentProfile)
 
 
