@@ -1,29 +1,44 @@
 from django.conf import settings
 from django.contrib.auth.models import check_password
 from accounts.models import User
+from django.core.validators import validate_email
+from django.forms import ValidationError
 
 class EmailOrUsernameAuthBackend(object):
     """
     A custom authentication backend. Allows users to log in using their email address or username.
     """
 
+    def _lookup_user(self, username_or_email):
+        try:
+            validate_email(username_or_email)
+                # Looks like an email. Since emails are not case sensitive
+                # and many users have a habit of typing them in mixed
+                # cases, we will normalize them to lower case. This assumes
+                # that the database has done the same thing.
+            user = User.objects.get(email=username_or_email.lower())
+        except ValidationError:
+            try:
+                user = User.objects.get(username=username_or_email)
+            except User.DoesNotExist:
+                return None
+        except User.DoesNotExist:
+            return None
+
+        return user
+
     def authenticate(self, username_or_email=None, password=None):
         """
         Authentication method
         """
-        try:
-            # maybe they gave us an email!
-            user = User.objects.get(email=username_or_email)
+        user = self._lookup_user(username_or_email)
+
+        if user:
             if user.check_password(password):
                 return user
-        except User.DoesNotExist:
-            # okay maybe they gave us a username!
-            try:
-                user = User.objects.get(username=username_or_email)
-                if user.check_password(password):
-                    return user
-            except User.DoesNotExist:
-                return None
+
+        return None
+        
 
     def get_user(self, user_id):
         try:
