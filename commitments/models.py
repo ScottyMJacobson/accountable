@@ -5,10 +5,36 @@ import datetime
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
+DEFAULT_DUE_TIME = datetime.time(hour=23, minute=59)
+
 class CommitmentProfile(models.Model):
     """The profile of a user, which contains the commitments they have created as well as their progress on each"""
     # Optional because there are users who will be observers who don't have a commitment profile...
     user = models.OneToOneField(settings.AUTH_USER_MODEL, blank=True, null=True)
+
+    def register_commitment(self, name, description, due_time=DEFAULT_DUE_TIME):
+        """Add a commitment to this profile"""
+        new_commitment = Commitment.objects.create(
+                                    owner_id = self.id, 
+                                    name = name,
+                                    description = description,
+                                    due_time = due_time
+                                )
+        new_commitment.save()
+
+    def get_active_commitments(self):
+        return self.commitment_set.all()
+
+    def __unicode__(self):
+        return "Commitment Profile for {0}".format(user.username)
+
+
+# make sure that with every new user, a commitmentprofile gets made
+@receiver(post_save, sender=settings.AUTH_USER_MODEL)
+def create_commitmentprofile(sender, instance, created, **kwargs):
+    if created:
+        CommitmentProfile.objects.create(user=instance)
+
 
 class Commitment(models.Model):
     """A single commitment, with a name and description (and eventually, frequency, alert settings, etc)"""
@@ -16,7 +42,10 @@ class Commitment(models.Model):
     created = models.DateTimeField(default=datetime.datetime.now, blank=True)
     name = models.CharField(max_length=50)
     description = models.CharField(max_length=200)
-    due_time = models.TimeField(default=datetime.time(hour=23, minute=59))
+    due_time = models.TimeField(default=DEFAULT_DUE_TIME)
+    
+    def __unicode__(self):
+        return self.name
 
 
 class CommitmentDailySnapshot(models.Model):
