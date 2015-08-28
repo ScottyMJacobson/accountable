@@ -85,7 +85,7 @@ class CommitmentStatus(models.Model):
     parent_snapshot = models.ForeignKey(CommitmentDailySnapshot)
     #NULL IF NOT YET ACCOMPLISHED
     time_accomplished = models.DateTimeField(blank=True, null=True)
-
+    comment = models.CharField(max_length=140, blank=True, null=True)
 
 
 
