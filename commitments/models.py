@@ -63,7 +63,8 @@ def create_commitmentprofile(sender, instance, created, **kwargs):
 class Commitment(models.Model):
     """A single commitment, with a name and description (and eventually, frequency, alert settings, etc)"""
     owner = models.ForeignKey(CommitmentProfile)
-    created = models.DateTimeField(default=timezone.now, blank=True)
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
     name = models.CharField(max_length=50)
     description = models.CharField(max_length=200)
     due_time = models.TimeField(default=DEFAULT_DUE_TIME)
