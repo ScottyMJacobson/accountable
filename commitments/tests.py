@@ -2,6 +2,8 @@ from django.test import TestCase
 from django.contrib.auth import get_user_model
 from commitments.models import *
 
+from django.utils import timezone
+import datetime
 
 class CommitmentProfileTestCase(TestCase):
     def setUp(self):
@@ -57,5 +59,9 @@ class CommitmentSnapshotTestCase(TestCase):
         commitment_statuses = snapshot.commitmentstatus_set.all()
         self.assertEqual(commitment_statuses[0].commitment.name,
                         self.dummy_commitment_name)
+
+    def test_create_future_snapshot(self):
+        snapshot = self.user.commitmentprofile.get_snapshot(date=datetime.date.today()+datetime.timedelta(days=1))
+        assert snapshot
 
 
