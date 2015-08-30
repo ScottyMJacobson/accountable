@@ -87,5 +87,15 @@ class CommitmentStatus(models.Model):
     time_accomplished = models.DateTimeField(blank=True, null=True)
     comment = models.CharField(max_length=140, blank=True, null=True)
 
+    def __str__(self):
+        return self.__unicode__()
+
+    def __unicode__(self):
+        return "'{0}' on {1}: Accomplished - {2}".format(
+                                                self.commitment.name,
+                                                self.parent_snapshot.date,
+                                                self.time_accomplished)
+
+
 
 
