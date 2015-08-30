@@ -49,8 +49,7 @@ class CommitmentSnapshotTestCase(TestCase):
         my_commitment_profile.register_commitment(self.dummy_commitment_name, 
             self.dummy_commitment_description)
 
-    def test_create_daily_snapshot(self):
-        all_commitments = self.user.commitmentprofile.get_active_commitments()
+    def test_create_today_snapshot(self):
         snapshot = self.user.commitmentprofile.get_snapshot()
         assert snapshot
         duplicate_snapshot = self.user.commitmentprofile.get_snapshot()
@@ -63,5 +62,17 @@ class CommitmentSnapshotTestCase(TestCase):
     def test_create_future_snapshot(self):
         snapshot = self.user.commitmentprofile.get_snapshot(date=datetime.date.today()+datetime.timedelta(days=1))
         assert snapshot
+
+    def test_set_commitment_accomplished(self):
+        all_commitments = self.user.commitmentprofile.get_active_commitments()
+        snapshot = self.user.commitmentprofile.get_snapshot()
+        commitment_to_accomplish = all_commitments[0]
+        time_accomplished = timezone.now()
+        snapshot.set_commitment_accomplished(commitment_to_accomplish.id, comment = "I DID IT!", time=time_accomplished)
+        updated_status = snapshot.get_commitment_status_by_id(commitment_to_accomplish.id)
+        self.assertEqual(updated_status.time_accomplished, time_accomplished)
+
+    
+
 
 

@@ -77,10 +77,18 @@ class Commitment(models.Model):
 
 
 class CommitmentDailySnapshot(models.Model):
-    """A representation of one day's worth of commitments and how each has done""" 
+    """A representation of one day's worth of commitments and how each has done
+    note: these are lazily created / allocated""" 
     date = models.DateField(default = datetime.date.today)
     owner = models.ForeignKey(CommitmentProfile)
 
+    def set_commitment_accomplished(self, id, comment="", time=datetime.datetime.now()):
+        """Set a particular commitment as accomplished in this snapshot by id"""
+        commitment_status_to_change = self.commitmentstatus_set.get(commitment=id)
+        commitment_status_to_change.set_accomplished(comment, time)
+
+    def get_commitment_status_by_id(self, id):
+        return self.commitmentstatus_set.get(commitment=id)
 
 class CommitmentStatus(models.Model):
     """The progress of one specific commitment on one specific day"""
@@ -89,6 +97,11 @@ class CommitmentStatus(models.Model):
     #NULL IF NOT YET ACCOMPLISHED
     time_accomplished = models.DateTimeField(blank=True, null=True)
     comment = models.CharField(max_length=140, blank=True, null=True)
+
+    def set_accomplished(self, comment, time):
+        self.time_accomplished = time
+        self.comment = comment
+        return self.save()
 
     def __str__(self):
         return self.__unicode__()
