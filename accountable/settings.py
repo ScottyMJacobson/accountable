@@ -35,8 +35,7 @@ BUILT_IN_APPS = [
     # Project specific apps
     'accountable.base',
 
-    # Third party apps
-    'django_jinja',
+
 
     # Django apps
     'django.contrib.admin',
@@ -47,12 +46,17 @@ BUILT_IN_APPS = [
     'django.contrib.staticfiles',
 ]
 
-CUSTOM_APPS = [
+THIRD_PARTY_APPS = [
+    'django_jinja',
+    'rest_framework'
+]
+
+PROJECT_APPS = [
     'commitments',
     'accounts',
 ]
 
-INSTALLED_APPS = BUILT_IN_APPS + CUSTOM_APPS
+INSTALLED_APPS = BUILT_IN_APPS + THIRD_PARTY_APPS + PROJECT_APPS
 
 
 for app in config('EXTRA_APPS', default='', cast=Csv()):
@@ -176,3 +180,13 @@ CSP_STYLE_SRC = (
     'http://*.mozilla.net',
     'https://*.mozilla.net',
 )
+
+# Django Rest Framework
+
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ]
+}

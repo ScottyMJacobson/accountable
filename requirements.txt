@@ -104,3 +104,12 @@ Pygments==2.0.2
 
 # sha256: b0wujFraFwOf8cHji8Ub6pMXrzZ24oRmFIyN9fx48TI
 django-jinja==1.4.1
+
+# sha256: CYQuyxx8OOWmZsBLz6kk9oLvHoLZyECA8Zwot3HQgMU
+djangorestframework==3.2.3
+
+# sha256: 3zu65Xjyl2dXG1zmekcC_hTtZxC5e6tZJRpRE7a-w6M
+Markdown==2.6.2
+
+# sha256: AMxHk1r7vYMmD90oOwqnkOZY0qcZIgSfbkZ9yooSRTc
+django-filter==0.11.0
