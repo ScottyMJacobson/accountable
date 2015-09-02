@@ -1,7 +1,10 @@
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 
-from commitments.serializers import CommitmentDailySnapshotSerializer, CommitmentProfileSerializer, CommitmentSerializer
+from commitments.serializers import CommitmentDailySnapshotSerializer,\
+                                        CommitmentProfileSerializer, \
+                                        CommitmentSerializer, \
+                                        CommitmentStatusSerializer
 
 class CommitmentProfileTestCase(TestCase):
     def setUp(self):
@@ -79,7 +82,29 @@ class CommitmentDailySnapshotSerializerTestCase(TestCase):
         snapshot = self.user.commitmentprofile.get_snapshot()
         assert snapshot
         self.serializer = CommitmentDailySnapshotSerializer(snapshot)
-        self.assertEqual(self.serializer.data['owner'], self.user.commitmentprofile)
+        self.assertEqual(self.serializer.data['owner'], self.user.commitmentprofile.id)
+
+class CommitmentStatusSerializerTestCase(TestCase):
+    def setUp(self):
+        self.username = "test_user"
+        self.email = "test@email.com"
+        self.password = "test_password"
+        self.user =  get_user_model().objects.create_user(
+                username = self.username,
+                email = self.email,
+                password = self.password,
+            )
+        self.dummy_commitment_name = 'wash face'
+        self.dummy_commitment_description = 'wash your face every night'
+        my_commitment_profile = self.user.commitmentprofile
+        my_commitment_profile.register_commitment(self.dummy_commitment_name, 
+            self.dummy_commitment_description)
+        self.dummy_commitment = self.user.commitmentprofile.get_active_commitments()[0]
+        self.snapshot = self.user.commitmentprofile.get_snapshot()
+
+    def test_commitment_status_serializer(self):
+        self.serializer = CommitmentStatusSerializer(self.snapshot.get_commitment_status_by_id(self.dummy_commitment.id))
+        print(self.serializer.data)
 
 
 

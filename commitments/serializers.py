@@ -15,8 +15,18 @@ class CommitmentProfileSerializer(serializers.ModelSerializer):
         fields = ('user', 'commitment_set', 'commitmentdailysnapshot_set')
 
 
+class CommitmentStatusSerializer(serializers.ModelSerializer):
+    commitment = CommitmentSerializer(read_only=True)
+
+    class Meta:
+        model = CommitmentStatus
+        fields = ('commitment', 'parent_snapshot', 'time_accomplished', 'comment')
+
+
 class CommitmentDailySnapshotSerializer(serializers.ModelSerializer):
+    commitmentstatus_set = CommitmentStatusSerializer(many=True)
     class Meta:
         model = CommitmentDailySnapshot
         fields = ('date', 'commitmentstatus_set', 'owner')
-        
+
+
