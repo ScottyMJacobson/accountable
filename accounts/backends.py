@@ -16,12 +16,15 @@ class EmailOrUsernameAuthBackend(object):
                 # and many users have a habit of typing them in mixed
                 # cases, we will normalize them to lower case. This assumes
                 # that the database has done the same thing.
-            user = User.objects.get(email=username_or_email.lower())
+            using_email = True
         except ValidationError:
-            try:
+            using_email = False
+        
+        try:
+            if using_email:
+                user = User.objects.get(email=username_or_email.lower())
+            else:
                 user = User.objects.get(username=username_or_email)
-            except User.DoesNotExist:
-                return None
         except User.DoesNotExist:
             return None
 
