@@ -9,7 +9,7 @@ from django.dispatch import receiver
 
 DEFAULT_DUE_TIME = datetime.time(hour=23, minute=59)
 
-class AccountableUser(models.Model):
+class CommitmentProfile(models.Model):
     """The profile of a user, which contains the commitments they have created as well as their progress on each"""
     user = models.OneToOneField(settings.AUTH_USER_MODEL)
 
@@ -56,12 +56,12 @@ class AccountableUser(models.Model):
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_commitmentprofile(sender, instance, created, **kwargs):
     if created:
-        AccountableUser.objects.create(user=instance)
+        CommitmentProfile.objects.create(user=instance)
 
 
 class Commitment(models.Model):
     """A single commitment, with a name and description (and eventually, frequency, alert settings, etc)"""
-    owner = models.ForeignKey(AccountableUser)
+    owner = models.ForeignKey(CommitmentProfile)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
     name = models.CharField(max_length=50)
@@ -79,7 +79,7 @@ class CommitmentDailySnapshot(models.Model):
     """A representation of one day's worth of commitments and how each has done
     note: these are lazily created / allocated""" 
     date = models.DateField(default = datetime.date.today)
-    owner = models.ForeignKey(AccountableUser)
+    owner = models.ForeignKey(CommitmentProfile)
 
     def set_commitment_accomplished(self, id, comment="", time=datetime.datetime.now()):
         """Set a particular commitment as accomplished in this snapshot by id"""
