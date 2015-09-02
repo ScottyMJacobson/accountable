@@ -30,11 +30,12 @@ class EmailOrUsernameAuthBackend(object):
 
         return user
 
-    def authenticate(self, username_or_email=None, password=None):
+    def authenticate(self, username=None, password=None):
         """
-        Authentication method
+        Authentication method - username here is actually "username_or_email",
+        but named as such to fit Django convention
         """
-        user = self._lookup_user(username_or_email)
+        user = self._lookup_user(username)
 
         if user:
             if user.check_password(password):
