@@ -48,7 +48,6 @@ THIRD_PARTY_APPS = [
 
 PROJECT_APPS = [
     # Project specific apps
-    'accountable.base',
     'commitments',
     'accounts',
 ]
