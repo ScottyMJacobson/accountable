@@ -1,7 +1,39 @@
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 
-from commitments.serializers import CommitmentSerializer
+from commitments.serializers import CommitmentProfileSerializer, CommitmentSerializer
+
+class CommitmentProfileTestCase(TestCase):
+    def setUp(self):
+        self.username = "test_user"
+        self.email = "test@email.com"
+        self.password = "test_password"
+        self.user =  get_user_model().objects.create_user(
+                username = self.username,
+                email = self.email,
+                password = self.password,
+            )
+        self.dummy_commitment_name = 'wash face'
+        self.dummy_commitment_description = 'wash your face every night'
+        self.dummy_commitment_name2 = 'wash face2'
+        self.dummy_commitment_description2 = 'wash your face every night2'
+
+        my_commitment_profile = self.user.commitmentprofile
+        my_commitment_profile.register_commitment(self.dummy_commitment_name, 
+            self.dummy_commitment_description)
+        my_commitment_profile.register_commitment(self.dummy_commitment_name2, 
+            self.dummy_commitment_description2)
+
+    def test_commitment_profile_serializer(self):
+        self.serializer = CommitmentProfileSerializer(self.user.commitmentprofile)
+        self.assertEqual(self.serializer.data['user'], self.user.commitmentprofile.id)
+
+    def test_commitment_profile_serializer_with_snapshot(self):
+        snapshot = self.user.commitmentprofile.get_snapshot()
+        assert snapshot
+        self.serializer = CommitmentProfileSerializer(self.user.commitmentprofile)
+        self.assertEqual(self.serializer.data['commitmentdailysnapshot_set'][0], snapshot.id)
+
 
 
 class CommitmentSerializerTestCase(TestCase):

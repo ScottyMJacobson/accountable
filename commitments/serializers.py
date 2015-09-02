@@ -8,3 +8,8 @@ class CommitmentSerializer(serializers.ModelSerializer):
         fields = ('name', 'owner', 'created', 'modified', 'name', 'description', 'due_time')
 
 
+class CommitmentProfileSerializer(serializers.ModelSerializer):
+    user = serializers.PrimaryKeyRelatedField(read_only=True)
+    class Meta:
+        model = CommitmentProfile
+        fields = ('user', 'commitment_set', 'commitmentdailysnapshot_set')
