@@ -3,7 +3,8 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from accounts import backends
 
-class TestAuthentication(TestCase):
+
+class TestBackend(TestCase):
     def setUp(self):
         self.username = "test_user"
         self.email = "test@email.com"
@@ -13,10 +14,6 @@ class TestAuthentication(TestCase):
                 email = self.email,
                 password = self.password,
             )
-
-class TestBackend(TestAuthentication):
-    def setUp(self):
-        super(TestBackend, self).setUp()
         self.dummy_backend = backends.EmailOrUsernameAuthBackend()
 
     def test_lookup_by_username(self):
