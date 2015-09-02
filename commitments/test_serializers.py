@@ -16,10 +16,10 @@ class CommitmentSerializerTestCase(TestCase):
             )
         self.dummy_commitment_name = 'wash face'
         self.dummy_commitment_description = 'wash your face every night'
-        my_commitment_profile = self.user.commitmentprofile
+        my_commitment_profile = self.user.accountableuser
         my_commitment_profile.register_commitment(self.dummy_commitment_name, 
             self.dummy_commitment_description)
-        self.dummy_commitment = self.user.commitmentprofile.get_active_commitments()[0]
+        self.dummy_commitment = self.user.accountableuser.get_active_commitments()[0]
 
     def test_commitment_serializer(self):
         self.serializer = CommitmentSerializer(self.dummy_commitment)
