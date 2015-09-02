@@ -11,8 +11,7 @@ DEFAULT_DUE_TIME = datetime.time(hour=23, minute=59)
 
 class CommitmentProfile(models.Model):
     """The profile of a user, which contains the commitments they have created as well as their progress on each"""
-    # Optional because there are users who will be observers who don't have a commitment profile...
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, blank=True, null=True)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL)
 
     def register_commitment(self, name, description, due_time=DEFAULT_DUE_TIME):
         """Add a commitment to this profile"""
