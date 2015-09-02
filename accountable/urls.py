@@ -5,5 +5,6 @@ urlpatterns = patterns(
     '',
     url(r'^admin/', include(admin.site.urls)),
     url(r'^accounts/', include('accounts.urls', namespace='accounts')),
+    url(r'^api/', include('commitments.urls', namespace='commitments')),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 )
