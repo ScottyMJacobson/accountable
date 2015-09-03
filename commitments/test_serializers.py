@@ -60,7 +60,7 @@ class CommitmentSerializerTestCase(TestCase):
     def test_commitment_serializer(self):
         self.serializer = CommitmentSerializer(self.dummy_commitment)
         self.assertEqual(self.serializer.data['name'], self.dummy_commitment_name)
-        self.assertEqual(self.serializer.data['owner'], self.user.commitmentprofile.id)
+        self.assertEqual(self.serializer.data['owner'], self.user.commitmentprofile)
 
 
 class CommitmentDailySnapshotSerializerTestCase(TestCase):

@@ -55,7 +55,7 @@ class CommitmentProfile(models.Model):
     def __str__(self):
         return self.__unicode__()
     def __unicode__(self):
-        return "Commitment Profile for {0}".format(user.username)
+        return "Commitment Profile for {0}".format(self.user.username)
 
 
 class Commitment(models.Model):

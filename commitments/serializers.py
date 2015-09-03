@@ -3,6 +3,7 @@ from rest_framework import serializers
 from commitments.models import CommitmentProfile, Commitment, CommitmentDailySnapshot, CommitmentStatus
 
 class CommitmentSerializer(serializers.ModelSerializer):
+    owner = serializers.ReadOnlyField()
     class Meta:
         model = Commitment
         fields = ('id', 'name', 'owner', 'created', 'modified', 'name', 'description', 'due_time')
