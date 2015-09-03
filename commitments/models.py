@@ -24,8 +24,12 @@ class CommitmentProfile(models.Model):
                                     due_time = due_time
                                 )
         new_commitment.save()
+        return new_commitment
 
     def get_active_commitments(self):
+        return self.commitment_set.filter(active=True)
+
+    def get_all_commitments(self):
         return self.commitment_set.all()
 
     def get_snapshot(self, date=datetime.date.today()):
@@ -62,7 +66,8 @@ class Commitment(models.Model):
     name = models.CharField(max_length=50)
     description = models.CharField(max_length=200)
     due_time = models.TimeField(default=DEFAULT_DUE_TIME)
-    
+    active = models.BooleanField(default=True)
+
     def __str__(self):
         return self.__unicode__()
 

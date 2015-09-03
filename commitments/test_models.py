@@ -73,7 +73,13 @@ class CommitmentSnapshotTestCase(TestCase):
         updated_status = snapshot.get_commitment_status_by_id(commitment_to_accomplish.id)
         self.assertEqual(updated_status.time_accomplished, time_accomplished)
 
-    
-
+    def test_active_inactive_commitments(self):
+        new_c = self.user.commitmentprofile.register_commitment(self.dummy_commitment_name, 
+            self.dummy_commitment_description)
+        new_c.active = False
+        new_c.save()
+        snapshot = self.user.commitmentprofile.get_snapshot()
+        #snapshot should only have one active commitment
+        self.assertEqual(snapshot.commitmentstatus_set.count(), 1)
 
 
