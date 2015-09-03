@@ -7,11 +7,13 @@ import datetime
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
+from annoying.fields import AutoOneToOneField
+
 DEFAULT_DUE_TIME = datetime.time(hour=23, minute=59)
 
 class CommitmentProfile(models.Model):
     """The profile of a user, which contains the commitments they have created as well as their progress on each"""
-    user = models.OneToOneField(settings.AUTH_USER_MODEL)
+    user = AutoOneToOneField(settings.AUTH_USER_MODEL)
 
     def register_commitment(self, name, description, due_time=DEFAULT_DUE_TIME):
         """Add a commitment to this profile"""
@@ -50,13 +52,6 @@ class CommitmentProfile(models.Model):
         return self.__unicode__()
     def __unicode__(self):
         return "Commitment Profile for {0}".format(user.username)
-
-
-# make sure that with every new user, a commitmentprofile gets made
-@receiver(post_save, sender=settings.AUTH_USER_MODEL)
-def create_commitmentprofile(sender, instance, created, **kwargs):
-    if created:
-        CommitmentProfile.objects.create(user=instance)
 
 
 class Commitment(models.Model):

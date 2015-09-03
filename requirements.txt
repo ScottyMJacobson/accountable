@@ -113,3 +113,7 @@ Markdown==2.6.2
 
 # sha256: AMxHk1r7vYMmD90oOwqnkOZY0qcZIgSfbkZ9yooSRTc
 django-filter==0.11.0
+
+# sha256: LBVogfYdQFdZJmSfPjIQDzvNvoLGeNQXkal5loXadok
+django-annoying==0.8.3
+

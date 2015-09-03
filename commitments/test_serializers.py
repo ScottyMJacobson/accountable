@@ -31,7 +31,7 @@ class CommitmentProfileTestCase(TestCase):
 
     def test_commitment_profile_serializer(self):
         self.serializer = CommitmentProfileSerializer(self.user.commitmentprofile)
-        self.assertEqual(self.serializer.data['user'], self.user.commitmentprofile.id)
+        self.assertEqual(self.serializer.data['user'], self.user.id)
 
     def test_commitment_profile_serializer_with_snapshot(self):
         snapshot = self.user.commitmentprofile.get_snapshot()
@@ -60,7 +60,7 @@ class CommitmentSerializerTestCase(TestCase):
     def test_commitment_serializer(self):
         self.serializer = CommitmentSerializer(self.dummy_commitment)
         self.assertEqual(self.serializer.data['name'], self.dummy_commitment_name)
-        self.assertEqual(self.serializer.data['owner'], self.user.id)
+        self.assertEqual(self.serializer.data['owner'], self.user.commitmentprofile.id)
 
 
 class CommitmentDailySnapshotSerializerTestCase(TestCase):
@@ -114,6 +114,6 @@ class CommitmentStatusSerializerTestCase(TestCase):
         self.serializer = CommitmentStatusSerializer(new_status)
         self.assertTrue(self.serializer.data['time_accomplished'])        
         self.assertEqual(self.serializer.data['comment'], self.dummy_comment)
-        
+
 
 
