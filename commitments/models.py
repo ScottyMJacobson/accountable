@@ -81,7 +81,7 @@ class CommitmentDailySnapshot(models.Model):
     date = models.DateField(default = datetime.date.today)
     owner = models.ForeignKey(CommitmentProfile)
 
-    def set_commitment_accomplished(self, id, comment="", time=datetime.datetime.now()):
+    def set_commitment_accomplished(self, id, comment="", time=timezone.now()):
         """Set a particular commitment as accomplished in this snapshot by id"""
         commitment_status_to_change = self.commitmentstatus_set.get(commitment=id)
         commitment_status_to_change.set_accomplished(comment, time)
@@ -97,7 +97,7 @@ class CommitmentStatus(models.Model):
     time_accomplished = models.DateTimeField(blank=True, null=True)
     comment = models.CharField(max_length=140, blank=True, null=True)
 
-    def set_accomplished(self, comment, time):
+    def set_accomplished(self, comment, time=timezone.now()):
         self.time_accomplished = time
         self.comment = comment
         return self.save()
