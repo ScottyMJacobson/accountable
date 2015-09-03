@@ -6,6 +6,8 @@ from commitments.serializers import CommitmentDailySnapshotSerializer,\
                                         CommitmentSerializer, \
                                         CommitmentStatusSerializer
 
+from django.utils import timezone
+
 class CommitmentProfileTestCase(TestCase):
     def setUp(self):
         self.username = "test_user"
@@ -101,10 +103,17 @@ class CommitmentStatusSerializerTestCase(TestCase):
             self.dummy_commitment_description)
         self.dummy_commitment = self.user.commitmentprofile.get_active_commitments()[0]
         self.snapshot = self.user.commitmentprofile.get_snapshot()
+        self.dummy_comment = "Hey I'm Done!"
 
     def test_commitment_status_serializer(self):
-        self.serializer = CommitmentStatusSerializer(self.snapshot.get_commitment_status_by_id(self.dummy_commitment.id))
-        print(self.serializer.data)
-
+        status = self.snapshot.get_commitment_status_by_id(self.dummy_commitment.id)
+        self.serializer = CommitmentStatusSerializer(status)
+        self.assertEqual(self.serializer.data['time_accomplished'], None)
+        self.snapshot.set_commitment_accomplished(self.dummy_commitment.id, comment=self.dummy_comment)
+        new_status = self.snapshot.get_commitment_status_by_id(self.dummy_commitment.id)
+        self.serializer = CommitmentStatusSerializer(new_status)
+        self.assertTrue(self.serializer.data['time_accomplished'])        
+        self.assertEqual(self.serializer.data['comment'], self.dummy_comment)
+        
 
 
