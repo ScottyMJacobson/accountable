@@ -71,4 +71,61 @@ class TestPostCommitmentsView(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data['name'], commitment_dict['name'])
 
+class TestCommitmentsDetail(APITestCase):
+    def setUp(self):
+        self.factory = APIRequestFactory()
+        self.username = "test_user"
+        self.email = "test@email.com"
+        self.password = "test_password"
+        self.user =  get_user_model().objects.create_user(
+                username = self.username,
+                email = self.email,
+                password = self.password,
+            )
+        self.commitment_dict = {'name': 'test commit', 'description':'you know what it is'}
+        request = self.factory.post('/profile/commitments/', self.commitment_dict)
+        force_authenticate(request, user=self.user)
+        response = views.commitments_list(request)
+        self.id_to_check = response.data['id']
+
+    def test_get_details_endpoint(self):
+        request2 = self.factory.get('/profile/commitments/' + str(self.id_to_check))
+        force_authenticate(request2, user=self.user)
+        response2 = views.commitments_detail(request2, pk=self.id_to_check)
+        self.assertEqual(response2.status_code, status.HTTP_200_OK)
+        self.assertEqual(response2.data['id'], self.id_to_check)
+
+    def test_put_details_endpoint(self):
+        new_commitment_dict = self.commitment_dict
+        new_description = 'NEW DESCRIPTION YO'
+        new_commitment_dict['description'] = new_description
+        request = self.factory.put('/profile/commitments/' + str(self.id_to_check), new_commitment_dict)
+        force_authenticate(request, user=self.user)
+        response = views.commitments_detail(request, pk=self.id_to_check)
+        self.assertEqual(response.data['id'], self.id_to_check)
+
+class TestDeleteCommitment(APITestCase):
+    def setUp(self):
+        self.factory = APIRequestFactory()
+        self.username = "test_user"
+        self.email = "test@email.com"
+        self.password = "test_password"
+        self.user =  get_user_model().objects.create_user(
+                username = self.username,
+                email = self.email,
+                password = self.password,
+            )
+        self.commitment_dict = {'name': 'test commit', 'description':'you know what it is'}
+        request = self.factory.post('/profile/commitments/', self.commitment_dict)
+        force_authenticate(request, user=self.user)
+        response = views.commitments_list(request)
+        self.id_to_check = response.data['id']
+
+    def test_delete_details_endpoint(self):
+        request_delete = self.factory.delete('/profile/commitments/' + str(self.id_to_check))
+        force_authenticate(request_delete, user=self.user)
+        response = views.commitments_detail(request_delete, pk=self.id_to_check)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        
+
 

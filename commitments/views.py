@@ -47,3 +47,34 @@ def commitments_list(request, format=None):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+
+@api_view(['GET', 'PUT', 'DELETE'])
+@permission_classes((IsAuthenticated,))
+def commitments_detail(request, pk, format=None):
+    """
+    Get, update, or delete a particular commitment
+    """
+    try:
+        commitment = Commitment.objects.get(pk=pk)
+    except Commitment.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    #TODO: replace with permission class
+    if commitment.owner != request.user.commitmentprofile:
+        return Response(status=status.HTTP_403_FORBIDDEN)
+
+    if request.method == 'GET':
+        serializer = CommitmentSerializer(commitment)
+        return Response(serializer.data)
+
+    elif request.method == 'PUT':
+        serializer = CommitmentSerializer(commitment, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    elif request.method == 'DELETE':
+        commitment.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
