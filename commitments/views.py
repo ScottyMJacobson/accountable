@@ -40,10 +40,9 @@ def commitments_list(request, format=None):
         return Response(serializer.data)
 
     elif request.method == 'POST':
-        request.data['owner'] = request.user.commitmentprofile.id
         serializer = CommitmentSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            serializer.save(owner=request.user.commitmentprofile)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
