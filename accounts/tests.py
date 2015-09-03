@@ -14,22 +14,21 @@ class TestLogin(TestCase):
                 email = self.email,
                 password = self.password,
             )
-        self.c = Client()
 
     def test_username_login(self):
-        login_result = self.c.login(username=self.username, password=self.password)
+        login_result = self.client.login(username=self.username, password=self.password)
         self.assertTrue(login_result)
 
     def test_email_login(self):
-        login_result = self.c.login(username=self.email, password=self.password)
+        login_result = self.client.login(username=self.email, password=self.password)
         self.assertTrue(login_result)
 
     def test_username_fail(self):
-        login_result = self.c.login(username="", password=self.password)
+        login_result = self.client.login(username="", password=self.password)
         self.assertFalse(login_result)
 
     def test_password_fail(self):
-        login_result = self.c.login(username=self.username, password="")
+        login_result = self.client.login(username=self.username, password="")
         self.assertFalse(login_result)
 
 
