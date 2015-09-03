@@ -38,3 +38,13 @@ def commitments_list(request, format=None):
     if request.method == 'GET':
         serializer = CommitmentSerializer(request.user.commitmentprofile.get_all_commitments(), many=True)
         return Response(serializer.data)
+
+    elif request.method == 'POST':
+        request.data['owner'] = request.user.commitmentprofile.id
+        serializer = CommitmentSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
