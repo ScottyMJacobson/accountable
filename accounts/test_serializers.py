@@ -19,4 +19,3 @@ class UserSerializerTestCase(TestCase):
     def test_user_serializer(self):
         self.serializer = UserSerializer(self.user)
         self.assertEqual(self.serializer.data['username'], self.username)
-

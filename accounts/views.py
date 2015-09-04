@@ -1,50 +1,19 @@
-from django.shortcuts import render
+from django.contrib.auth import get_user_model
+from accounts.serializers import UserSerializer
+from rest_framework import viewsets
+from rest_framework.permissions import AllowAny
 
-from django.shortcuts import render_to_response, redirect
-from django.template import RequestContext
-from django.contrib.auth import login as django_login, authenticate, logout as django_logout
+from accounts.permissions import IsStaffOrTargetUser
 
-from accounts.forms import AuthenticationForm, RegistrationForm
+class UserView(viewsets.ModelViewSet):
+    serializer_class = UserSerializer
+    model = get_user_model()
+    queryset = get_user_model().objects.all()
 
-def login(request):
-    """
-    View for logging in
-    """
-    if request.method == 'POST':
-        form = AuthenticationForm(data=request.POST)
-        if form.is_valid():
-            user = authenticate(email=request.POST['email'], password=request.POST['password'])
-            if user is not None:
-                if user.is_active:
-                    django_login(request, user)
-                    return redirect('/')
-    else:
-        form = AuthenticationForm()
-    return render_to_response('accounts/login.html', {
-        'form': form,
-        }, context_instance = RequestContext(request))
+    def get_permissions(self):
+        # Allow anyone to create via POST, only allow views
+        # to the user who's looking
+        return(AllowAny() if self.request.method == 'POST'
+               else IsStaffOrTargetUser()),
 
-
-def register(request):
-    """
-    User registration view
-    """
-
-    if request.method == 'POST':
-        form = RegistrationForm(data=request.POST)
-        if form.is_valid():
-            user = form.save()
-            return redirect('/')
-    else:
-        form = RegistrationForm()
-    return render_to_response('accounts/register.html', {
-        'form': form,
-    }, context_instance=RequestContext(request))
-
-def logout(request):
-    """
-    Log out view
-    """
-    django_logout(request)
-    return redirect('/')
 

@@ -1,7 +1,13 @@
-from django.conf.urls import patterns, url
+from django.conf.urls import patterns, url, include
+from accounts import views
 
-urlpatterns = patterns('',
-    url(r'^register$', 'accounts.views.register', name='register'),
-    url(r'^login$', 'accounts.views.login', name='login'),
-    url(r'^logout$', 'accounts.views.logout', name='logout'),
+from rest_framework import routers
+
+router = routers.DefaultRouter()
+router.register(r'accounts', views.UserView, 'list')
+
+
+urlpatterns = patterns(
+    '',
+    url(r'^', include(router.urls)),
 )
