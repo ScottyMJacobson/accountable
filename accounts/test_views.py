@@ -2,7 +2,7 @@ from rest_framework.test import APITestCase, APIRequestFactory, force_authentica
 from rest_framework import status
 
 from django.contrib.auth import get_user_model
-from django.core.urlresolvers import reverse
+from rest_framework.reverse import reverse
 
 from accounts import views
 
@@ -11,7 +11,8 @@ class TestPostUser(APITestCase):
         user_dict = {'username': "test_user",
                     'email': "test@email.com",
                     'password': "test_password"}
-        response = self.client.post('/api/accounts/', user_dict, format='json')
+        url = reverse('accounts:account-list')
+        response = self.client.post(url, user_dict, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
 
@@ -26,14 +27,17 @@ class TestGetUser(APITestCase):
                 password = self.password,
             )
 
-    def test_list_users(self):
+    def test_fail_list_users(self):
+        # this should fail because the user isn't a superuser 
         self.client.force_authenticate(user=self.user)
-        response = self.client.get('/api/accounts/')
+        url = reverse('accounts:account-list')
+        response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_get_user(self):
         self.client.force_authenticate(user=self.user)
-        response = self.client.get('/api/accounts/'+str(self.user.id)+'/')
+        url = reverse('accounts:account-detail', args=[self.user.id])
+        response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         
