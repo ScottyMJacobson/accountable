@@ -4,7 +4,7 @@ from distutils.core import setup
 
 setup(name='accountable',
       version='0.1dev',
-      description='This is https://github.com/mozilla/accountable',
+      description='Accountable, a way to track your daily commitments',
       author='Scotty M Jacobson',
       author_email='',
-      url='https://github.com/mozilla/accountable')
+      url='https://github.com/ScottyMJacobson/accountable')
