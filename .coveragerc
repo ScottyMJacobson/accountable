@@ -1,5 +1,7 @@
 [run]
-source = accountable
+branch = True
+omit = */tests/*, */migrations/*, */urls.py, */settings/*, */wsgi.py, manage.py, setup.py
+source = .
 
 [report]
 omit = */migrations/*
