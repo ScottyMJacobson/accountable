@@ -1,6 +1,6 @@
 language: python
 python:
-  - "2.7"
+  - "3.4"
 addons:
   postgresql: "9.3"
 before_script:
@@ -8,8 +8,6 @@ before_script:
 install:
   - pip install tox coveralls
 env:
-  - TOX_ENV=flake8
-  - TOX_ENV=docs
   - TOX_ENV=tests
 script:
   - tox -e $TOX_ENV
