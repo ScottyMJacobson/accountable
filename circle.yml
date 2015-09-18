@@ -1,0 +1,18 @@
+
+## Customize the test machine
+machine:
+  # Add some environment variables
+  environment:
+    TOX_ENV: tests
+
+## Customize dependencies
+dependencies:
+  pre:
+    - pip install tox coveralls
+
+## Customize test commands
+test:
+  override:
+    - tox -e $TOX_ENV
+  post:
+    - coveralls
